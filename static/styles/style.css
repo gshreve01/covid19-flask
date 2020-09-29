@@ -1,0 +1,56 @@
+h5.news {
+    text-align: left;
+}
+
+img.featured {
+    max-width: 100%;
+    height: auto;
+}
+
+/* #map,
+body,
+html {
+  height: 100%;
+} */
+
+.media-body {
+    width:30em;
+}
+
+nav.BiggerMenu {
+    font-size: 1.5rem;
+}
+
+div.BiggerText {
+    font-size: 1.5rem;   
+}
+
+table.mostchanged {
+    border: 1px solid black;
+    font-size: 1.5em;
+    align-self: center;
+    padding: 0.5em;
+    width: 25em;
+     margin: auto; 
+}
+
+div.InfoHeader {
+    font-size: 2em;
+    text-align: center;    
+}
+
+tr.main:nth-child(even) {background-color: #f2f2f2;}
+tr.main:nth-child(odd) {background-color:lightblue;}
+
+td.mylabel {
+    font-weight: 600;
+    min-width: 7em;
+    text-align: left;
+}
+
+
+
+div.Covid19Title {
+    background-color: lightgray;
+}
+
