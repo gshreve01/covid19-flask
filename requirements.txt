@@ -1,0 +1,8 @@
+django
+gunicorn
+django-heroku
+flask
+sqlalchemy
+getpass
+
+
