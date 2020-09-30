@@ -3,6 +3,8 @@ gunicorn
 django-heroku
 flask
 sqlalchemy
-getpass
-
+simplejson
+json
+datetime
+pandas
 
