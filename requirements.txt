@@ -4,7 +4,6 @@ django-heroku
 flask
 sqlalchemy
 simplejson
-json
 datetime
 pandas
 
