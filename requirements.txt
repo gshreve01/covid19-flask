@@ -6,4 +6,4 @@ sqlalchemy
 simplejson
 datetime
 pandas
-
+requests
