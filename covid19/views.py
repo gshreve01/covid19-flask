@@ -33,8 +33,8 @@ accepted_data_points_map.append({"description": "On Ventilator Currently"
                                 , "name": "onventilatorcurrently"})
 
 @app.route("/home")
-def home():
-    return index()
+def home(request):
+    return index(request)
     
 @app.route("/")
 def index(request):
@@ -44,12 +44,12 @@ def index(request):
     return render(request, "index.html", {"index_data": index_data})
 
 @app.route("/Maps")
-def defaultMap():
-    return heatMap("positiveincrease")
+def defaultMap(request):
+    return heatMap(request, "positiveincrease")
 
 
 @app.route("/Maps/<dataPointName>")
-def heatMap(dataPointName):
+def heatMap(request, dataPointName):
     print(dataPointName)
     map_data = {}
     map_data["datapointmap"] = accepted_data_points_map
@@ -64,28 +64,28 @@ def heatMap(dataPointName):
     map_data["date"] =rawRows[0]['date'].strftime("%m/%d/%Y")
     print("date", map_data["date"])
     print("map_data.rows", map_data["rows"])
-    return render_template("chorplethmap.html", map_data = map_data)
+    return render(request, "chorplethmap.html", {"map_data" : map_data} )
 
 @app.route("/BarGraphs")
-def grades():
+def grades(request):
     grade_data = {}
-    return render_template("bargraph.html")
+    return render(request, "bargraph.html")
 
 @app.route("/Dashboard1")
-def dashboard1():
-    return render_template("dashboard1.html")
+def dashboard1(request):
+    return render(request, "dashboard1.html")
 
 @app.route("/Dashboard2")
-def dashboard2():
-    return render_template("dashboard2.html")
+def dashboard2(request):
+    return render(request, "dashboard2.html")
  
 @app.route("/Dashboard3")
-def dashboard3():
-    return render_template("dashboard3.html")
+def dashboard3(request):
+    return render(request, "dashboard3.html")
  
 @app.route("/Dashboard4")
-def dashboard4():
-    return render_template("dashboard4.html")
+def dashboard4(request):
+    return render(request, "dashboard4.html")
     
 
 if __name__ == "__main__":

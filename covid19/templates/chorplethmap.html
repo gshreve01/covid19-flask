@@ -56,7 +56,7 @@
                 <a class="nav-link" href="#">Maps<span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="BarGraphs">Bar Graphs</span></a>
+                <a class="nav-link" href="/BarGraphs">Bar Graphs</span></a>
               </li>
               </li>
             </ul>
@@ -67,8 +67,8 @@
     <div class="container">
 
         <div class="jumbotron text-center">
-            <h1>Covid19 Mapping for {{map_data["date"]}}</h1>
-            <h2>{{map_data["datapointdescription"]}}</h2>
+            <h1>Covid19 Mapping for {{ map_data.date }}</h1>
+            <h2>{{ map_data.datapointdescription }}</h2>
         </div>
         <div class="row">
             <div class="col-md-12">
@@ -107,11 +107,11 @@
     <!-- JS Template-->
     <script type="text/javascript">
         {% autoescape off %}
-        var rows = {{ map_data["rows"]}};
-        var quantiles = {{ map_data["quantiles"]}};
-        var dataPointMap = {{ map_data["datapointmap"]}};
-        var datapointName = "{{ map_data['datapointname']}}";
-        var datapointDescription = "{{ map_data['datapointdescription']}}";
+        var rows = {{ map_data.rows }};
+        var quantiles = {{ map_data.quantiles }};
+        var dataPointMap = {{ map_data.datapointmap }};
+        var datapointName = "{{ map_data.datapointname }}";
+        var datapointDescription = "{{ map_data.datapointdescription }}";
         {% endautoescape %}
 
     </script>

@@ -16,6 +16,13 @@ import covid19.views
 
 urlpatterns = [
     path("", covid19.views.index, name="index"),
-    #path("db/", hello.views.db, name="db"),
+    path("home", covid19.views.index, name="index"),
+    path("Maps/", covid19.views.defaultMap, name=""),
+    path("Maps/<dataPointName>", covid19.views.heatMap, name="chorplethmap"),
+    path("Dashboard1/", covid19.views.dashboard1, name="Dashboard1"),  
+    path("Dashboard2/", covid19.views.dashboard2, name="Dashboard2"), 
+    path("Dashboard3/", covid19.views.dashboard3, name="Dashboard3"), 
+    path("Dashboard4/", covid19.views.dashboard4, name="Dashboard4"),       
+    path("BarGraphs/", covid19.views.grades, name="bargraph"),    
     path("admin/", admin.site.urls),
 ]
