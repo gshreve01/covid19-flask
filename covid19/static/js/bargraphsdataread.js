@@ -30,7 +30,7 @@ var margin = {
 
 //declare the width and height of svg element
 var width = 960 - margin.left - margin.right;
-var height = 700 - margin.top - margin.bottom;
+var height = 650 - margin.top - margin.bottom;
 
 
 //Initial Params
@@ -277,17 +277,7 @@ function filtermydata() {
 
     var filteredData = gdailyData.filter(days => days.Date === chosenDate);
 
-    //function to return unique values of a list
-    function uniqueValues(value, index, self) {
-        return self.indexOf(value) === index
-    }
-    var sts = filteredData.map(d => d.State.toUpperCase()).filter(uniqueValues).sort();
-    console.log(sts)
-    //Create State selection drop down options
-    sts.forEach(function (c) {
-        var x = d3.select("#stateSelect");
-        x.append("option").text(c).attr("value", c);
-    })
+
 
     var statessel = document.getElementById("stateSelect")
 
@@ -316,7 +306,7 @@ function filtermydata() {
 
 
 var gdailyData = []
-d3.csv("static/js/data/Covid19.csv").then(function (dailyData, err) {
+d3.csv("/static/js/data/Covid19.csv").then(function (dailyData, err) {
     if (err) throw err;
     console.log(dailyData)
     //Convert necessary string fields to integers
@@ -327,6 +317,18 @@ d3.csv("static/js/data/Covid19.csv").then(function (dailyData, err) {
         data.healthcare = +data.healthcare
     });
     gdailyData = dailyData
+
+    //function to return unique values of a list
+    function uniqueValues(value, index, self) {
+        return self.indexOf(value) === index
+    }
+    var sts = dailyData.map(d => d.State.toUpperCase()).filter(uniqueValues).sort();
+    console.log(sts)
+    //Create State selection drop down options
+    sts.forEach(function (c) {
+        var x = d3.select("#stateSelect");
+        x.append("option").text(c).attr("value", c);
+    })
 
     removeSvg();
     var filteredd = filtermydata()

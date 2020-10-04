@@ -4,11 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <title>Covid Daily Data</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" href="../static/styles/style.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <link rel="stylesheet" href="static/styles/style.css">
+  <link rel="stylesheet" href="static/styles/d3Style.css">
   <link rel="stylesheet" href="../static/styles/bootstrap.min.css">
   <link rel="stylesheet" href="../static/styles/bootstrap.css">
-  <link rel="stylesheet" href="static/styles/d3Style.css">
 
 
 </head>
@@ -22,7 +25,7 @@
     <div class="collapse navbar-collapse" id="navbarColor01">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <h3><a class="nav-link" href="/home">Covid-19</a></h3>
+          <h3><a class="nav-link active" href="/home">Covid-19</a></h3>
         </li>
       </ul>
       <div class="collapse navbar-collapse order-3 dual-collapse2" id="navbarColor01">
@@ -34,13 +37,8 @@
                   <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" id="visualizations"
                     aria-expanded="false">Dash Boards<span class="caret"></span></a>
                   <div class="dropdown-menu" aria-labelledby="themes">
-                    <a class="dropdown-item" href="/Dashboard1">Population VS
-                      Confirmed</a>
-                    <a class="dropdown-item" href="/Dashboard2">Median Age VS
-                      Confirmed</a>
-                    <a class="dropdown-item" href=/Dashboard3">Median Age VS Death</a>
-                    <a class="dropdown-item" href="/Dashboard4">Hosehold Income VS
-                      Confirmed</a>
+                    <a class="dropdown-item" href="/Dashboard2">Deaths / State of Economy</a>
+                    <a class="dropdown-item" href="/Dashboard4">Holidays and Post 2 Week Effects</a>
                   </div>
                 </li>
               </ul>
@@ -48,10 +46,11 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/Maps">Maps</span></a>
+            <a class="nav-link" href="/Maps">Maps</a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link" href="#">Bar Graphs<span class="sr-only">(current)</a>
+            <a class="nav-link" href="#">Bar Graphs<span
+              class="sr-only">(current)</span></a>
           </li>
           </li>
         </ul>
@@ -62,7 +61,7 @@
   <div class="container">
     <div class="row">
       <div class="col-xs-12 col-md-12">
-        <h1>Covid Daily Data</h1>
+        <h3 style="text-align: center;">Covid Daily Data</h3>
       </div>
     </div>
     <div class="row">
@@ -70,20 +69,21 @@
         <aside class="filters">
           <div class="panel panel-default">
 
-            <button id="filter-btn" type="button"  class="btn btn-secondary">Filter Table</button>
+            <button id="filter-btn" type="button" class="btn btn-secondary" style="margin-top: 27px;">Filter
+              Table</button>
             <br>
             <div class="panel-body">
 
-              <form>  
+              <form>
                 <h7>Select a Date</h7>
-                <input type="text" id="datepicker" style="width: 100%;"/>  
-                <br>            
+                <input type="text" id="datepicker" style="width: 100%;" />
+                <br>
                 <h7>Select the states you would like to view</h7>
                 <br>
                 <select id="stateSelect" size="8" multiple="multiple">
                   <option value="all" selected>ALL</option>
                 </select>
-                
+
               </form>
             </div>
           </div>
@@ -102,9 +102,16 @@
   </div>
 
 
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script><script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
   <!-- <script type="text/javascript" src="../static/js/app.js"></script> -->
 
   <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
