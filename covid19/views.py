@@ -6,7 +6,7 @@ from config import GetURIConfig
 from django.shortcuts import render
 import getpass
 import requests
-from .models import censusdata
+from .models import CensusData
 
 app = Flask(__name__)
 
@@ -39,7 +39,7 @@ def home(request):
     
 @app.route("/")
 def index(request):
-    censusdata_values = censusdata.objects.all()
+    censusdata_values = CensusData.objects.all()
 
     index_data = {}
     index_data["census_data"] = censusdata_values
