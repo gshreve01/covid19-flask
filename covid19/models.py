@@ -1,5 +1,11 @@
-# from django.db import models
+from django.db import models
 
-# # Create your models here.
-# class Greeting(models.Model):
-#     when = models.DateTimeField("date created", auto_now_add=True)
+# Create your models here.
+class censusdata(models.Model):
+    managed = True
+    geocodeid = models.IntegerField("geographic code identifier",primary_key=True)
+    population = models.IntegerField("Population", null=False)
+    density = models.FloatField("Population density", null=True)
+
+def __str__(self):
+    return self.name

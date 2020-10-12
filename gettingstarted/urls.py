@@ -24,5 +24,6 @@ urlpatterns = [
     path("Dashboard3/", covid19.views.dashboard3, name="Dashboard3"), 
     path("Dashboard4/", covid19.views.dashboard4, name="Dashboard4"),       
     path("BarGraphs/", covid19.views.grades, name="bargraph"),    
+    path("data", covid19.views.censusdatashow, name=""),
     path("admin/", admin.site.urls),
 ]

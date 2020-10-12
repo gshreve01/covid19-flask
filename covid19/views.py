@@ -6,6 +6,7 @@ from config import GetURIConfig
 from django.shortcuts import render
 import getpass
 import requests
+from .models import censusdata
 
 app = Flask(__name__)
 
@@ -38,10 +39,20 @@ def home(request):
     
 @app.route("/")
 def index(request):
+    censusdata_values = censusdata.objects.all()
+
     index_data = {}
+    index_data["census_data"] = censusdata_values
     index_data["most_changed"] = loadMostChangedState(engine)
     # return render_template("index.html", index_data=index_data)
     return render(request, "index.html", {"index_data": index_data})
+
+def censusdatashow(request):
+    censusdata_values = censusdata.objects.all()
+    data = {}
+    data["items"] = censusdata_values
+    return render(request, "censusdata.html", {"data": data})
+
 
 @app.route("/Maps")
 def defaultMap(request):
