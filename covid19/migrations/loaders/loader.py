@@ -2,16 +2,23 @@ from django.db import migrations, models
 import pandas as pd
 import os
 import datetime
+import math
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 fixture_dir = os.path.abspath(os.path.join(BASE_DIR, 'loaders/fixture.data'))
 format_str = '%m/%d/%Y' # The desired format for django date
+format_str2 = '%Y-%m-%d' # The desired format for django date
 
 def load_fixture(apps, schema_editor):
     stateQS = loadStateData(apps, schema_editor)
+    economyStateQS = loadEconomyState(apps, schema_editor)
+    loadStateReopening(apps, schema_editor, stateQS, economyStateQS)
+    loadGredeEffDt(apps, schema_editor, stateQS)
     loadCensusData(apps, schema_editor, stateQS)
     loadCoronaVirusTesting(apps, schema_editor, stateQS)
+    eventsQS = loadEvents(apps, schema_editor)
+    loadEventDates(apps, schema_editor, eventsQS)
     loadDailyData(apps, schema_editor, stateQS)
 
 def loadStateData(apps, schema_editor):
@@ -54,7 +61,6 @@ def loadCensusData(apps, schema_editor, stateQS):
         )
     MyModel.objects.using(db_alias).bulk_create(data)
 
-
 def loadCoronaVirusTesting(apps, schema_editor, stateQS):
     print("Loading Corona Virus Testing.....")
     csv_filename = os.path.join(fixture_dir, 'CoronaVirusTesting.csv')
@@ -78,7 +84,7 @@ def loadCoronaVirusTesting(apps, schema_editor, stateQS):
     MyModel.objects.using(db_alias).bulk_create(data)        
 
 def loadDailyData(apps, schema_editor, stateQS):
-    print("Loading Daily Data Testing.....")
+    print("Loading Daily Data .....")
     csv_filename = os.path.join(fixture_dir, 'DailyData.csv')
     MyModel = apps.get_model("covid19", "DailyData")
     StateModel = apps.get_model("covid19", "State")
@@ -128,6 +134,117 @@ def loadDailyData(apps, schema_editor, stateQS):
         MyModel.objects.using(db_alias).bulk_create(data) 
         print(f"....Loading {totalRecCount} records")
 
+def loadEconomyState(apps, schema_editor):
+    print("Loading EconomyState.....")
+    csv_filename = os.path.join(fixture_dir, 'EconomyState.csv')
+    MyModel = apps.get_model("covid19", "EconomyState")
+    db_alias = schema_editor.connection.alias
+
+    df = pd.read_csv(csv_filename, delimiter=',')
+    data = []
+
+    for index, row in df.iterrows():
+        data.append(MyModel(
+            id = row.id,
+            state = row.state)
+        )
+    MyModel.objects.using(db_alias).bulk_create(data)
+        
+    objs = MyModel.objects.values()
+    return objs
+
+def loadEvents(apps, schema_editor):
+    print("Loading Events.....")
+    csv_filename = os.path.join(fixture_dir, 'Events.csv')
+    MyModel = apps.get_model("covid19", "Event")
+    db_alias = schema_editor.connection.alias
+
+    df = pd.read_csv(csv_filename, delimiter=',')
+    data = []
+
+    for index, row in df.iterrows():
+        data.append(MyModel(
+            id = row.id,
+            eventname = row.eventname)
+        )
+    MyModel.objects.using(db_alias).bulk_create(data)    
+    objs = MyModel.objects.values()
+    return objs
+
+def loadEventDates(apps, schema_editor, eventsQS):
+    print("Loading Event Dates.....")
+    csv_filename = os.path.join(fixture_dir, 'EventDates.csv')
+    MyModel = apps.get_model("covid19", "EventDate")
+    EventModel = apps.get_model("covid19", "Event")
+    db_alias = schema_editor.connection.alias
+
+    df = pd.read_csv(csv_filename, delimiter=',')
+    data = []
+
+    for index, row in df.iterrows():
+        record = eventsQS.filter(id = row.eventid)[0]
+        eventData = EventModel(**record)        
+        data.append(MyModel(
+            event = eventData,
+            eventdate = datetime.datetime.strptime(row.eventdate, format_str))
+        )
+    MyModel.objects.using(db_alias).bulk_create(data)    
+
+
+def loadGredeEffDt(apps, schema_editor, stateQS):
+    print("Loading Grade Effective Date.....")
+    csv_filename = os.path.join(fixture_dir, 'StayatHomeGrades.csv')
+    MyModel = apps.get_model("covid19", "GredeEffDt")
+    StateModel = apps.get_model("covid19", "State")
+    db_alias = schema_editor.connection.alias
+
+    df = pd.read_csv(csv_filename, delimiter=',')
+    data = []
+
+    for index, row in df.iterrows():
+        record = stateQS.filter(name = row.State)[0]
+        stateData = StateModel(**record)
+        data.append(MyModel(
+            state = stateData,
+            grade = row.Grade,
+            stayathomedeclaredate = dateValueOrNone(row["Date Announced"], format_str2),
+            stayathomestartdata = dateValueOrNone(row["Effective Date"], format_str2))          
+        )
+    MyModel.objects.using(db_alias).bulk_create(data) 
+
+def dateValueOrNone(value, format_str):
+    if value and not str(value) == 'nan':
+        return datetime.datetime.strptime(value, format_str)
+    else:
+        return None
+
+def loadStateReopening(apps, schema_editor, stateQS, economyStateQS):
+    print("Loading State Reopening.....")
+    csv_filename = os.path.join(fixture_dir, 'CovidOpeningData.csv')
+    MyModel = apps.get_model("covid19", "StateReopening")
+    StateModel = apps.get_model("covid19", "State")
+    EconomyStateModel = apps.get_model("covid19", "EconomyState")
+    db_alias = schema_editor.connection.alias
+
+    df = pd.read_csv(csv_filename, delimiter=',')
+    data = []
+
+    for index, row in df.iterrows():
+        economyStateKey = row.economy_state.replace("EconomyState.", "")
+        record = stateQS.filter(name = row.state)[0]
+        stateData = StateModel(**record)
+        record = economyStateQS.filter(state = economyStateKey)[0]
+        economyStateData = EconomyStateModel(**record)
+        data.append(MyModel(
+            state = stateData,
+            economystate = economyStateData,
+            stayathomeexpiredate = dateValueOrNone(row.expired_on, format_str),
+            openbusinesses = row.open,
+            closedbusinesses = row.close,
+            hasstayathomeorder = row.had_stay_at_home_order == 'True')          
+        )
+    MyModel.objects.using(db_alias).bulk_create(data) 
+
 def unload_fixture(apps, schema_editor):
 
 # delete from django_migrations where app = 'covid19';
@@ -136,11 +253,11 @@ def unload_fixture(apps, schema_editor):
 # drop table covid19_eventdate;
 # drop table covid19_gredeeffdt;
 # drop table covid19_statereopening;
-# drop table covid19_state;
 # drop table covid19_event;
 # drop table covid19_dailydata;
 # drop table covid19_economystate;
 # drop table covid19_censusdata;
+# drop table covid19_state;
     
     "Brutally deleting all entries for this model..."
 
