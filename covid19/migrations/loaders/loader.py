@@ -11,6 +11,7 @@ format_str = '%m/%d/%Y' # The desired format for django date
 format_str2 = '%Y-%m-%d' # The desired format for django date
 
 def load_fixture(apps, schema_editor):
+    print("Start loading data...")
     stateQS = loadStateData(apps, schema_editor)
     economyStateQS = loadEconomyState(apps, schema_editor)
     loadStateReopening(apps, schema_editor, stateQS, economyStateQS)
@@ -77,7 +78,7 @@ def loadCoronaVirusTesting(apps, schema_editor, stateQS):
         data.append(MyModel(
             state = stateData,
             percentageoftestingtarget = row.PercentageOfTestingTarget,
-            positivitytestrage = row.PositivityTestRate,
+            positivitytestrate = row.PositivityTestRate,
             dailytestsper100k = row.DailyTestPer100K,
             hospitalizedper100k = row.HospitalizedPer100K)
         )
@@ -128,6 +129,7 @@ def loadDailyData(apps, schema_editor, stateQS):
             totalRecCount += recCount
             recCount = 0
             print(f"....Loading {totalRecCount} records")
+            # break
 
     if data:
         totalRecCount += recCount
@@ -208,7 +210,7 @@ def loadGredeEffDt(apps, schema_editor, stateQS):
             state = stateData,
             grade = row.Grade,
             stayathomedeclaredate = dateValueOrNone(row["Date Announced"], format_str2),
-            stayathomestartdata = dateValueOrNone(row["Effective Date"], format_str2))          
+            stayathomestartdate = dateValueOrNone(row["Effective Date"], format_str2))          
         )
     MyModel.objects.using(db_alias).bulk_create(data) 
 
@@ -247,6 +249,26 @@ def loadStateReopening(apps, schema_editor, stateQS, economyStateQS):
 
 def unload_fixture(apps, schema_editor):
 
+    # Dropping Views
+    print("Dropping Views....")
+    migrations.RunSQL("drop view covid19_vcensusdata;")
+    migrations.RunSQL("drop view covid19_vcompletecoviddata;")
+    migrations.RunSQL("drop view covid19_veventrelatedcoviddata;")
+    migrations.RunSQL("drop view covid19_vlatestdatecoviddata;")
+    migrations.RunSQL("drop view covid19_vstatereopening;")
+
+    # Dropping Tables
+    print("Dropping Tables....")
+    migrations.RunSQL("drop table covid19_coronavirustesting;")
+    migrations.RunSQL("drop table covid19_eventdate")
+    migrations.RunSQL("drop table covid19_gredeeffdt")
+    migrations.RunSQL("drop table covid19_statereopening")
+    migrations.RunSQL("drop table covid19_event")
+    migrations.RunSQL("drop table covid19_dailydata")
+    migrations.RunSQL("drop table covid19_economystate")
+    migrations.RunSQL("drop table covid19_censusdata")
+    migrations.RunSQL("drop table covid19_state")  
+
 # delete from django_migrations where app = 'covid19';
 
 # drop table covid19_coronavirustesting;
@@ -259,10 +281,10 @@ def unload_fixture(apps, schema_editor):
 # drop table covid19_censusdata;
 # drop table covid19_state;
     
-    "Brutally deleting all entries for this model..."
+    # "Brutally deleting all entries for this model..."
 
-    MyModel = apps.get_model("covid19", "censusdata")
-    MyModel.objects.all().delete()
+    # MyModel = apps.get_model("covid19", "censusdata")
+    # MyModel.objects.all().delete()
 
 # from .loaders.loader import load_fixture, unload_fixture
 # migrations.RunPython(load_fixture, reverse_code=unload_fixture),

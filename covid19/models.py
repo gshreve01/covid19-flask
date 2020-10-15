@@ -21,7 +21,7 @@ class CensusData(models.Model):
 class CoronaVirusTesting(models.Model):
     state = models.ForeignKey(State, on_delete=models.CASCADE, primary_key=True, unique=True, db_column="geocodeid")
     percentageoftestingtarget = models.IntegerField("Percentage Of Testing Target", null=True)
-    positivitytestrage = models.IntegerField("Positivity Test Rage", null=True)
+    positivitytestrate = models.IntegerField("Positivity Test Rage", null=True)
     dailytestsper100k = models.IntegerField("Daily Tests Per 100,000", null=True)
     hospitalizedper100k = models.IntegerField("Hospitalized Per 100,000", null=True)
 
@@ -85,7 +85,7 @@ class GredeEffDt(models.Model):
     state = models.ForeignKey(State, to_field='name', db_column='state', primary_key=True, on_delete=models.CASCADE)
     grade = models.CharField("State Grade", max_length=3, null=False)
     stayathomedeclaredate = models.DateField("Date Stay At Home was Declared", null=True)
-    stayathomestartdata = models.DateField("Date Stay At Home Started", null=True)
+    stayathomestartdate = models.DateField("Date Stay At Home Started", null=True)
     
     def __str__(self):
        return f"{self.name}:{self.state.name}"

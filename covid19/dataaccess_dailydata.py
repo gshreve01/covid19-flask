@@ -13,14 +13,14 @@ select s.Name, t1.*, ro.stayathomestartdate, ro.stayathomeexpiredate, ro.state a
 from dailydata t1
 join (
 select max(positiveincrease) as PositiveIncrease, max(date) as MaxDate
-from dailydata
+from covid19_dailydata
 where date = (
 	select max(date)
-	from dailydata
+	from covid19_dailydata
 )
 ) t2 on t1.positiveincrease = t2.positiveincrease
-join state s on s.geocodeid = t1.geocodeid
-join vstatereopening ro on ro.name = s.name"""
+join covid19_state s on s.geocodeid = t1.geocodeid
+join covid19_vstatereopening ro on ro.name = s.name"""
     print(statement)
 
     with engine.connect() as conn:
@@ -47,7 +47,7 @@ def loadLatestData(engine, dataPointName):
     # This should be put in separate file
     statement = """\
 select *
-from vlatestdatecoviddata;"""
+from covid19_vlatestdatecoviddata;"""
     print(statement)
 
     rows = []

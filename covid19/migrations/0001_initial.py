@@ -3,6 +3,7 @@
 from django.db import migrations, models
 import django.db.models.deletion
 from .loaders.loader import load_fixture, unload_fixture
+from .loaders.db_views import *
 
 class Migration(migrations.Migration):
 
@@ -47,7 +48,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('state', models.ForeignKey(db_column='geocodeid', on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='covid19.State', unique=True)),
                 ('percentageoftestingtarget', models.IntegerField(null=True, verbose_name='Percentage Of Testing Target')),
-                ('positivitytestrage', models.IntegerField(null=True, verbose_name='Positivity Test Rage')),
+                ('positivitytestrate', models.IntegerField(null=True, verbose_name='Positivity Test Rage')),
                 ('dailytestsper100k', models.IntegerField(null=True, verbose_name='Daily Tests Per 100,000')),
                 ('hospitalizedper100k', models.IntegerField(null=True, verbose_name='Hospitalized Per 100,000')),
             ],
@@ -58,7 +59,7 @@ class Migration(migrations.Migration):
                 ('state', models.ForeignKey(db_column='state', on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='covid19.State', to_field='name')),
                 ('grade', models.CharField(max_length=3, verbose_name='State Grade')),
                 ('stayathomedeclaredate', models.DateField(null=True, verbose_name='Date Stay At Home was Declared')),
-                ('stayathomestartdata', models.DateField(null=True, verbose_name='Date Stay At Home Started')),
+                ('stayathomestartdate', models.DateField(null=True, verbose_name='Date Stay At Home Started')),
             ],
         ),
         migrations.CreateModel(
@@ -113,4 +114,9 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RunPython(load_fixture, reverse_code=unload_fixture),
+        migrations.RunSQL(vcensusdata, "drop view covid19_vcensusdata"),
+        migrations.RunSQL(vcompletecoviddata, "drop view covid19_vcompletecoviddata"),
+        migrations.RunSQL(veventrelatedcoviddata, "drop view covid19_veventrelatedcoviddata"),
+        migrations.RunSQL(vlatestdatecoviddata, "drop view covid19_vlatestdatecoviddata"),
+        migrations.RunSQL(vstatereopening, "drop view covid19_vstatereopening"),
     ]
