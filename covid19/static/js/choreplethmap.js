@@ -17,7 +17,7 @@ function runFormSearch() {
   // build route
   selectedDataType = datatypeSelect.property("value");
   var route = "Maps/" + selectedDataType
-  window.location.href = "http://127.0.0.1:5000/" + route;
+  window.location.href = "/" + route;
 }
 
 // DataType Selection
